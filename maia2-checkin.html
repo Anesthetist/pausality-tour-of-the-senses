@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pausality · MAIA-2 Check-in</title>
+<style>
+  :root{
+    --paper:#F5F1E8; --card:#FFFDF8; --ink:#1F2421; --muted:#6B6A60;
+    --line:#E4DCCB; --teal:#14746F; --teal-deep:#0E5450; --teal-soft:#E6F0EE;
+    --amber:#C6692B; --shadow:0 10px 30px rgba(31,36,33,.07);
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:34px 22px 90px}
+  .brand{font-family:var(--serif);letter-spacing:.02em;font-size:14px;color:var(--teal-deep);text-transform:uppercase}
+  h1{font-family:var(--serif);font-weight:600;font-size:30px;margin:.25em 0 .15em;line-height:1.15}
+  .lede{color:var(--muted);font-size:16px;margin:0 0 14px}
+  .note{font-size:13.5px;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:12px;padding:12px 14px;margin:12px 0}
+  .note b{color:var(--teal-deep)}
+  .scaleguide{position:sticky;top:0;background:var(--paper);padding:10px 0 8px;z-index:5;
+    border-bottom:1px solid var(--line);font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between}
+  .scaleguide span{flex:1;text-align:center}
+  .grp{margin-top:26px}
+  .grp h2{font-family:var(--serif);font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--teal-deep);margin:0 0 2px}
+  .grp p.gd{color:var(--muted);font-size:13.5px;margin:0 0 10px}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:9px 0;box-shadow:var(--shadow)}
+  .item .q{font-size:15.5px;margin-bottom:10px}
+  .opts{display:flex;gap:6px;justify-content:space-between}
+  .opts label{flex:1;text-align:center;cursor:pointer}
+  .opts input{display:none}
+  .opts .dot{display:block;border:1px solid var(--line);border-radius:9px;padding:9px 0;font-size:14px;background:#fff;transition:.12s}
+  .opts label:hover .dot{border-color:var(--teal)}
+  .opts input:checked+.dot{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:600}
+  .btn{background:var(--teal);color:#fff;border:none;border-radius:12px;padding:13px 24px;font-size:16px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+  .btn:hover{background:var(--teal-deep)}
+  .btn.ghost{background:#fff;color:var(--teal-deep);border:1px solid var(--line)}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:24px}
+  #progress{color:var(--muted);font-size:14px}
+  /* results */
+  #results{margin-top:30px;display:none}
+  .bar{margin:14px 0}
+  .bar .bl{display:flex;justify-content:space-between;font-size:14.5px;margin-bottom:5px}
+  .bar .bl b{font-family:var(--serif);font-weight:600}
+  .bar .bv{color:var(--teal-deep);font-weight:600}
+  .track{background:#EFE8D8;border-radius:999px;height:14px;overflow:hidden}
+  .fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-deep));border-radius:999px;transition:width .6s}
+  .rdesc{font-size:13px;color:var(--muted);margin-top:3px}
+  .foot{color:var(--muted);font-size:12.5px;margin-top:40px;border-top:1px solid var(--line);padding-top:16px;line-height:1.5}
+  .priv{color:var(--teal-deep);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">Pausality · A Tour of the Senses</div>
+  <h1>MAIA-2 Body-Awareness Check-in</h1>
+  <p class="lede">A short self-portrait of how you relate to your body's inner signals — across eight
+  facets. There are no good or bad scores. It's a mirror you can return to.</p>
+
+  <div class="note"><b>What this is — and isn't.</b> This measures interoceptive <b>sensibility</b>
+  (how attuned you <em>feel</em>, by self-report). That is a different thing from interoceptive
+  <b>accuracy</b> (how well you'd actually track a body signal on a test) — and the two often diverge.
+  Feeling attuned isn't the same as being accurate. Hold the result as reflection, not assessment.</div>
+
+  <div class="note">Items follow the <b>MAIA-2</b> (Multidimensional Assessment of Interoceptive
+  Awareness, version 2; Mehling et&nbsp;al., 2018), freely available under Creative Commons. Wording here
+  is reproduced to the editors' best fidelity — verify against the official instrument before any
+  research or clinical use. Not a medical test; no diagnosis is implied.</div>
+
+  <div class="scaleguide">
+    <span>0 · Never</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5 · Always</span>
+  </div>
+
+  <form id="form"></form>
+
+  <div class="actions">
+    <button class="btn" id="score" type="button">See my profile</button>
+    <span id="progress">0 / 37 answered</span>
+  </div>
+
+  <div id="results">
+    <h2 style="font-family:var(--serif);font-weight:600;font-size:23px">Your eight facets</h2>
+    <p style="color:var(--muted);font-size:14.5px;margin-top:2px">Each facet is the average of its items, 0–5.
+    Higher means you report relating to that signal more readily — not that it's "better."</p>
+    <div id="bars"></div>
+    <p style="font-family:var(--serif);font-style:italic;color:var(--teal-deep);font-size:16px;margin-top:18px">
+      Body-listening is the doorway to the felt present — the sense of <em>now</em> and the sense of
+      <em>self</em> are built from these very signals.</p>
+    <div class="actions">
+      <button class="btn ghost" id="copy" type="button">Copy my profile</button>
+      <span id="copied" style="color:var(--teal-deep);font-size:14px"></span>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span class="priv">Everything stays on your device. Nothing is sent anywhere.</span><br>
+    Pausality · Somnistics Research Labs · pausality.health
+  </div>
+</div>
+
+<script>
+const SCALES={
+ noticing:{name:'Noticing',desc:'awareness of body sensations'},
+ nd:{name:'Not-Distracting',desc:'tendency not to ignore or distract from discomfort'},
+ nw:{name:'Not-Worrying',desc:'tendency not to worry with discomfort'},
+ attn:{name:'Attention Regulation',desc:'sustaining & directing attention to the body'},
+ emo:{name:'Emotional Awareness',desc:'noticing the body–emotion link'},
+ self:{name:'Self-Regulation',desc:'regulating distress by attending to the body'},
+ listen:{name:'Body Listening',desc:'listening to the body for insight'},
+ trust:{name:'Trusting',desc:'experiencing the body as safe & trustworthy'},
+};
+// {s:scale, t:text, r:reverse-scored?}
+const ITEMS=[
+ {s:'noticing',t:'When I am tense I notice where the tension is located in my body.'},
+ {s:'noticing',t:'I notice when I am uncomfortable in my body.'},
+ {s:'noticing',t:'I notice where in my body I am comfortable.'},
+ {s:'noticing',t:'I notice changes in my breathing, such as whether it slows down or speeds up.'},
+ {s:'nd',r:1,t:'I distract myself from sensations of discomfort.'},
+ {s:'nd',r:1,t:'I do not notice (I ignore) physical tension or discomfort until they become more severe.'},
+ {s:'nd',r:1,t:'When I feel physical pain or discomfort, I try to power through it.'},
+ {s:'nd',r:1,t:'I push feelings of discomfort away by focusing on something else.'},
+ {s:'nd',r:1,t:'When I feel unpleasant body sensations, I occupy myself with something else so I don’t have to feel them.'},
+ {s:'nd',r:1,t:'When I feel pain or discomfort, I try not to think about it.'},
+ {s:'nw',r:1,t:'When I feel physical pain, I become upset.'},
+ {s:'nw',r:1,t:'I start to worry that something is wrong if I feel any discomfort.'},
+ {s:'nw',t:'I can notice an unpleasant body sensation without worrying about it.'},
+ {s:'nw',t:'I can stay calm and not worry when I have feelings of discomfort or pain.'},
+ {s:'nw',t:'When I feel physical discomfort, I can keep from being overwhelmed by it.'},
+ {s:'attn',t:'I can pay attention to my breath without being distracted by things happening around me.'},
+ {s:'attn',t:'I can maintain awareness of my inner bodily sensations even when there is a lot going on around me.'},
+ {s:'attn',t:'When I am in conversation with someone, I can pay attention to my posture.'},
+ {s:'attn',t:'I can return awareness to my body if I am distracted.'},
+ {s:'attn',t:'I can refocus my attention from thinking to sensing my body.'},
+ {s:'attn',t:'I can maintain awareness of my whole body even when a part of me is in pain or discomfort.'},
+ {s:'attn',t:'I am able to consciously focus on my body as a whole.'},
+ {s:'emo',t:'I notice how my body changes when I am angry.'},
+ {s:'emo',t:'When something is wrong in my life I can feel it in my body.'},
+ {s:'emo',t:'I notice that my body feels different after a peaceful experience.'},
+ {s:'emo',t:'I notice that my breathing becomes free and easy when I feel comfortable.'},
+ {s:'emo',t:'I notice how my body changes when I feel happy or joyful.'},
+ {s:'self',t:'When I feel overwhelmed I can find a calm place inside.'},
+ {s:'self',t:'When I bring awareness to my body I feel a sense of calm.'},
+ {s:'self',t:'I can use my breath to reduce tension.'},
+ {s:'self',t:'When I am caught up in thoughts, I can calm my mind by focusing on my body or breathing.'},
+ {s:'listen',t:'I listen for information from my body about my emotional state.'},
+ {s:'listen',t:'When I am upset, I take time to explore how my body feels.'},
+ {s:'listen',t:'I listen to my body to inform me about what to do.'},
+ {s:'trust',t:'I am at home in my body.'},
+ {s:'trust',t:'I feel my body is a safe place.'},
+ {s:'trust',t:'I trust my body sensations.'},
+];
+
+const form=document.getElementById('form');
+let lastScale=null;
+ITEMS.forEach((it,i)=>{
+  if(it.s!==lastScale){
+    lastScale=it.s;
+    const g=document.createElement('div');g.className='grp';
+    g.innerHTML=`<h2>${SCALES[it.s].name}</h2><p class="gd">${SCALES[it.s].desc}</p>`;
+    g.id='grp-'+it.s; form.appendChild(g);
+  }
+  const grp=document.getElementById('grp-'+it.s);
+  const d=document.createElement('div');d.className='item';
+  let opts='';
+  for(let v=0;v<=5;v++){
+    opts+=`<label><input type="radio" name="q${i}" value="${v}"><span class="dot">${v}</span></label>`;
+  }
+  d.innerHTML=`<div class="q">${it.t}</div><div class="opts">${opts}</div>`;
+  grp.appendChild(d);
+});
+
+form.addEventListener('change',updateProgress);
+function answered(){let n=0;ITEMS.forEach((_,i)=>{if(form.querySelector(`input[name=q${i}]:checked`))n++;});return n;}
+function updateProgress(){document.getElementById('progress').textContent=`${answered()} / 37 answered`;}
+
+let results=null;
+document.getElementById('score').onclick=()=>{
+  const sums={},counts={};
+  Object.keys(SCALES).forEach(k=>{sums[k]=0;counts[k]=0;});
+  ITEMS.forEach((it,i)=>{
+    const el=form.querySelector(`input[name=q${i}]:checked`);
+    if(!el)return;
+    let v=+el.value; if(it.r)v=5-v;
+    sums[it.s]+=v;counts[it.s]++;
+  });
+  results={};
+  Object.keys(SCALES).forEach(k=>{results[k]=counts[k]?sums[k]/counts[k]:null;});
+  const desc=m=>m==null?'not answered':m>=4?'strongly reported':m>=3?'moderately reported':m>=1.7?'lightly reported':'seldom reported';
+  document.getElementById('bars').innerHTML=Object.keys(SCALES).map(k=>{
+    const m=results[k];const pct=m==null?0:(m/5*100);
+    return `<div class="bar"><div class="bl"><b>${SCALES[k].name}</b>
+      <span class="bv">${m==null?'—':m.toFixed(2)} / 5</span></div>
+      <div class="track"><div class="fill" style="width:${pct}%"></div></div>
+      <div class="rdesc">${desc(m)}</div></div>`;
+  }).join('');
+  const r=document.getElementById('results');r.style.display='block';
+  r.scrollIntoView({behavior:'smooth',block:'start'});
+};
+
+document.getElementById('copy').onclick=()=>{
+  if(!results)return;
+  const txt='Pausality · MAIA-2 Check-in (interoceptive sensibility, self-report 0–5)\n\n'+
+    Object.keys(SCALES).map(k=>`${SCALES[k].name}: ${results[k]==null?'—':results[k].toFixed(2)} / 5`).join('\n')+
+    '\n\nNote: sensibility (felt attunement), not accuracy. Reflection, not assessment.';
+  navigator.clipboard.writeText(txt).then(()=>{
+    document.getElementById('copied').textContent='Copied ✓';
+    setTimeout(()=>document.getElementById('copied').textContent='',2500);
+  });
+};
+</script>
+</body>
+</html>

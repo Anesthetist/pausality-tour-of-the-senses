@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pausality · Wonder Questions</title>
+<style>
+  :root{
+    --paper:#F5F1E8; --card:#FFFDF8; --ink:#1F2421; --muted:#6B6A60;
+    --line:#E4DCCB; --teal:#14746F; --teal-deep:#0E5450; --teal-soft:#E6F0EE;
+    --amber:#C6692B; --shadow:0 18px 50px rgba(31,36,33,.10);
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(120% 90% at 50% 0%,#FBF8F0,var(--paper));
+    color:var(--ink);font-family:var(--sans);line-height:1.55;min-height:100vh}
+  .wrap{max-width:680px;margin:0 auto;padding:34px 22px 70px;text-align:center}
+  .brand{font-family:var(--serif);letter-spacing:.02em;font-size:14px;color:var(--teal-deep);text-transform:uppercase}
+  h1{font-family:var(--serif);font-weight:600;font-size:30px;margin:.25em 0 .1em}
+  .lede{color:var(--muted);font-size:16px;margin:0 auto 18px;max-width:520px}
+  /* breath pacer */
+  .pacer{display:flex;flex-direction:column;align-items:center;margin:8px 0 6px;height:108px;justify-content:center}
+  .dot{width:34px;height:34px;border-radius:50%;background:var(--teal);
+    box-shadow:0 0 0 0 rgba(20,116,111,.25);animation:breathe 10s ease-in-out infinite}
+  @keyframes breathe{
+    0%{transform:scale(.7);box-shadow:0 0 0 0 rgba(20,116,111,.18)}
+    50%{transform:scale(1.45);box-shadow:0 0 0 26px rgba(20,116,111,.06)}
+    100%{transform:scale(.7);box-shadow:0 0 0 0 rgba(20,116,111,.18)}}
+  .breathlabel{font-size:13px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:12px}
+  @media (prefers-reduced-motion:reduce){.dot{animation:none}}
+  .pause-off .dot{animation:none}
+  /* card */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);
+    padding:42px 30px;margin:14px 0;min-height:230px;display:flex;flex-direction:column;justify-content:center;
+    opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s}
+  .card.in{opacity:1;transform:none}
+  .cat{font-family:var(--serif);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--amber);margin-bottom:16px}
+  .qtext{font-family:var(--serif);font-size:24px;line-height:1.4}
+  .kept{display:inline-block;margin-top:18px;font-size:13px;color:var(--teal-deep)}
+  .controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+  .btn{background:var(--teal);color:#fff;border:none;border-radius:14px;padding:13px 26px;font-size:16px;
+    font-weight:600;cursor:pointer;font-family:var(--sans)}
+  .btn:hover{background:var(--teal-deep)}
+  .btn.ghost{background:#fff;color:var(--teal-deep);border:1px solid var(--line)}
+  .small{font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;margin-top:14px}
+  #keptList{text-align:left;margin-top:26px;display:none}
+  #keptList h2{font-family:var(--serif);font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--teal-deep)}
+  #keptList li{font-family:var(--serif);font-size:16px;margin:8px 0}
+  .foot{color:var(--muted);font-size:12.5px;margin-top:40px;border-top:1px solid var(--line);padding-top:16px;line-height:1.5}
+  .priv{color:var(--teal-deep);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap" id="root">
+  <div class="brand">Pausality · A Tour of the Senses</div>
+  <h1>Wonder Questions</h1>
+  <p class="lede">Draw a card. Let the dot pace your breath — in as it grows, out as it falls —
+  and hold the question for one full round before you answer. There are no right answers; there's
+  only what you notice.</p>
+
+  <div class="pacer" id="pacer">
+    <div class="dot"></div>
+    <div class="breathlabel" id="breathlabel">breathe with the dot · ~5s in · ~5s out</div>
+  </div>
+
+  <div class="card" id="card">
+    <div class="cat" id="cat">Begin</div>
+    <div class="qtext" id="q">Press <em>Draw a card</em> when your next exhale ends.</div>
+    <span class="kept" id="keptMark"></span>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="draw">Draw a card</button>
+    <button class="btn ghost" id="keep">Keep this one</button>
+  </div>
+  <button class="small" id="toggleBreath">pause the breathing dot</button>
+  <button class="small" id="showKept" style="margin-left:14px">show kept cards</button>
+
+  <div id="keptList"><h2>Cards you kept</h2><ul id="keptUl"></ul>
+    <button class="btn ghost" id="copyKept">Copy kept cards</button>
+    <span id="copied" style="color:var(--teal-deep);font-size:14px;margin-left:8px"></span></div>
+
+  <div class="foot">
+    <span class="priv">Everything stays on your device. Nothing is sent anywhere.</span><br>
+    Pausality · Somnistics Research Labs · pausality.health<br>
+    <span style="font-size:11.5px">If you have dizziness, are pregnant, dehydrated, or have a
+    neurovascular condition, breathe normally rather than pacing.</span>
+  </div>
+</div>
+
+<script>
+const DECK=[
+ // Awe
+ {c:'Awe',q:'When did you last feel small in a way that felt like relief rather than threat?'},
+ {c:'Awe',q:'What is the largest thing you can hold in your attention right now?'},
+ {c:'Awe',q:'Recall a moment that briefly rearranged what you thought was possible. Where did you feel it in your body?'},
+ {c:'Awe',q:'What ordinary thing, looked at long enough, becomes astonishing?'},
+ // Mystery
+ {c:'Mystery',q:'What do you believe that you cannot prove?'},
+ {c:'Mystery',q:'Name something you understand less now than you did ten years ago.'},
+ {c:'Mystery',q:'What question are you afraid to finish asking?'},
+ {c:'Mystery',q:'Where in your life is the map clearly not the territory?'},
+ // Time
+ {c:'Time',q:'When did time last disappear for you — and what were you attending to?'},
+ {c:'Time',q:'Is this present moment something you are reading, or something you are making?'},
+ {c:'Time',q:'If the next breath were the only unit of time, how long is "now"?'},
+ {c:'Time',q:'What part of today did you live through without being present for it?'},
+ {c:'Time',q:'Has fear ever sped time up for you, or stretched it? Which, and why?'},
+ // The Body
+ {c:'The Body',q:'Where is your attention in your body, right now — before you change it?'},
+ {c:'The Body',q:'Is the sensation you notice the situation itself, or your expectation of it?'},
+ {c:'The Body',q:'What is the quietest signal your body is sending you at this moment?'},
+ {c:'The Body',q:'If your body could say one sentence to you, would you trust it? Should you?'},
+ {c:'The Body',q:'How much of what you feel right now is signal, and how much is story?'},
+ {c:'The Body',q:'A feeling arrives already colored — pleasant or not. Can you catch one before the verdict lands?'},
+ // Connection
+ {c:'Connection',q:'Who taught you what safety feels like in the body?'},
+ {c:'Connection',q:'Bring to mind someone who cares for you. What changes in your chest, your breath, your shoulders?'},
+ {c:'Connection',q:'Whose attention do you most want — and what would you do with it?'},
+ {c:'Connection',q:'When you are at your most overwhelmed, who do you become? Is that who you mean to be?'},
+ // Meaning
+ {c:'Meaning',q:'What would you attend to more, if you trusted your attention to be sovereign?'},
+ {c:'Meaning',q:'What are you practicing without having chosen to?'},
+ {c:'Meaning',q:'If the gap between a trigger and your response grew by one second, what would you do with it?'},
+ {c:'Meaning',q:'What is worth slowing down for that you keep speeding past?'},
+ {c:'Meaning',q:'What would it mean to be at home in your own body?'},
+ {c:'Meaning',q:'If awe were a daily practice rather than an accident, where would you go looking for it?'},
+];
+
+let order=[],idx=-1;const kept=[];
+function shuffle(){order=DECK.map((_,i)=>i);for(let i=order.length-1;i>0;i--){
+  const j=Math.floor((Date.now()*(i+7)%9973)/9973*(i+1))%(i+1);[order[i],order[j]]=[order[j],order[i]];}}
+shuffle();
+
+const cardEl=document.getElementById('card');
+function draw(){
+  idx++;
+  if(idx>=order.length){shuffle();idx=0;}
+  const card=DECK[order[idx]];
+  cardEl.classList.remove('in');
+  setTimeout(()=>{
+    document.getElementById('cat').textContent=card.c;
+    document.getElementById('q').innerHTML=card.q;
+    document.getElementById('keptMark').textContent=kept.includes(card.q)?'kept ✓':'';
+    cardEl.classList.add('in');
+  },180);
+}
+document.getElementById('draw').onclick=draw;
+document.getElementById('keep').onclick=()=>{
+  if(idx<0)return;const q=DECK[order[idx]].q;
+  if(!kept.includes(q)){kept.push(q);}
+  document.getElementById('keptMark').textContent='kept ✓';
+  renderKept();
+};
+function renderKept(){
+  document.getElementById('keptUl').innerHTML=kept.map(q=>`<li>“${q}”</li>`).join('')||'<li style="color:var(--muted)">none yet</li>';
+}
+document.getElementById('showKept').onclick=()=>{
+  const k=document.getElementById('keptList');
+  const show=k.style.display!=='block';k.style.display=show?'block':'none';
+  document.getElementById('showKept').textContent=show?'hide kept cards':'show kept cards';
+  renderKept();
+};
+document.getElementById('toggleBreath').onclick=function(){
+  const off=document.getElementById('root').classList.toggle('pause-off');
+  this.textContent=off?'resume the breathing dot':'pause the breathing dot';
+  document.getElementById('breathlabel').textContent=off?'paced breath paused':'breathe with the dot · ~5s in · ~5s out';
+};
+document.getElementById('copyKept').onclick=()=>{
+  const txt='Pausality · Wonder Questions — cards I kept\n\n'+kept.map(q=>'• '+q).join('\n');
+  navigator.clipboard.writeText(txt).then(()=>{
+    document.getElementById('copied').textContent='Copied ✓';
+    setTimeout(()=>document.getElementById('copied').textContent='',2500);
+  });
+};
+</script>
+</body>
+</html>

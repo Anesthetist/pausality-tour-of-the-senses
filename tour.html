@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pausality · A Tour of the Senses</title>
+<meta name="description" content="Three small instruments for calibrating the felt present — emotional granularity, interoceptive awareness, and wonder. Runs entirely in your browser.">
+<style>
+  :root{
+    --paper:#F5F1E8; --card:#FFFDF8; --ink:#1F2421; --muted:#6B6A60;
+    --line:#E4DCCB; --teal:#14746F; --teal-deep:#0E5450; --teal-soft:#E6F0EE;
+    --amber:#C6692B; --shadow:0 10px 30px rgba(31,36,33,.07); --shadow-lg:0 18px 50px rgba(31,36,33,.10);
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased}
+  [hidden]{display:none!important}
+  .hide{display:none}
+  /* top nav */
+  #topnav{position:sticky;top:0;z-index:20;background:rgba(245,241,232,.92);backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);padding:12px 22px;display:flex;gap:12px;align-items:baseline}
+  #topnav a{color:var(--teal-deep);text-decoration:none;font-weight:600;font-size:14px}
+  #topnav a:hover{text-decoration:underline}
+  #topnav #navlabel{font-family:var(--serif);color:var(--muted);font-size:14px}
+  .view{max-width:760px;margin:0 auto;padding:34px 22px 90px}
+  .brand{font-family:var(--serif);letter-spacing:.03em;font-size:14px;color:var(--teal-deep);text-transform:uppercase}
+  h1{font-family:var(--serif);font-weight:600;font-size:32px;margin:.25em 0 .15em;line-height:1.14}
+  .lede{color:var(--muted);font-size:16px;margin:0 0 10px}
+  .btn{background:var(--teal);color:#fff;border:none;border-radius:12px;padding:12px 22px;
+    font-size:15px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+  .btn:hover{background:var(--teal-deep)}
+  .btn[disabled]{opacity:.4;cursor:not-allowed}
+  .btn.ghost{background:#fff;color:var(--teal-deep);border:1px solid var(--line)}
+  .row,.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px}
+  .foot{color:var(--muted);font-size:12.5px;margin-top:40px;border-top:1px solid var(--line);padding-top:16px;line-height:1.5}
+  .priv{color:var(--teal-deep);font-weight:600}
+  /* ---------- HOME ---------- */
+  #view-home{padding-top:52px}
+  #view-home h1{font-size:38px}
+  .epi{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--teal-deep);
+    border-left:3px solid var(--teal);padding-left:16px;margin:22px 0 28px;max-width:560px}
+  a.tool{display:block;text-decoration:none;color:inherit;background:var(--card);
+    border:1px solid var(--line);border-radius:18px;box-shadow:0 14px 40px rgba(31,36,33,.09);
+    padding:22px 24px;margin:14px 0;transition:.18s}
+  a.tool:hover{transform:translateY(-3px);border-color:var(--teal)}
+  .tnum{font-family:var(--serif);color:var(--amber);font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+  .tname{font-family:var(--serif);font-size:23px;font-weight:600;margin:4px 0 4px}
+  .tdesc{color:var(--muted);font-size:15px}
+  .tgo{color:var(--teal-deep);font-weight:600;font-size:14px;margin-top:10px;display:inline-block}
+  /* ---------- shared step cards ---------- */
+  .step{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px;margin:18px 0}
+  .step h2{font-family:var(--serif);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-deep);margin:0 0 4px}
+  .step h3{font-family:var(--serif);font-size:21px;margin:0 0 14px;font-weight:600}
+  .hint{color:var(--muted);font-size:14px;margin:-6px 0 14px}
+  /* ---------- EC ---------- */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .quad{border:1px solid var(--line);border-radius:14px;padding:16px 14px;cursor:pointer;background:#fff;transition:.18s;min-height:96px;display:flex;flex-direction:column;justify-content:center}
+  .quad:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .quad.active{border-color:var(--teal);background:var(--teal-soft)}
+  .quad .qn{font-family:var(--serif);font-size:17px;font-weight:600}
+  .quad .qd{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .axislabel{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin:8px 0}
+  .words{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .word{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;cursor:pointer;font-size:14.5px;transition:.15s}
+  .word:hover{border-color:var(--teal)}
+  .word.sel{background:var(--teal);color:#fff;border-color:var(--teal)}
+  .amp-val{font-family:var(--serif);font-size:34px;font-weight:600;text-align:center;margin:4px 0 0}
+  .amp-label{text-align:center;color:var(--muted);font-size:14px;margin-bottom:10px;min-height:20px}
+  input[type=range]{width:100%;accent-color:var(--amber);height:30px}
+  .scaleends{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
+  textarea,input[type=text]{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-family:var(--sans);font-size:15px;background:#fff;resize:vertical}
+  label.fld{display:block;font-size:14px;margin:14px 0 5px;font-weight:600}
+  .toggle{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px;background:var(--teal-soft);border-radius:12px;font-size:14px;color:var(--teal-deep)}
+  .toggle input{width:18px;height:18px;accent-color:var(--teal)}
+  .frame{font-size:13.5px;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:12px;padding:12px 14px;margin-top:14px}
+  .timeprompt{font-family:var(--serif);font-style:italic;color:var(--teal-deep);font-size:16px;margin-top:14px;display:none}
+  .capture{border-left:3px solid var(--teal);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0;box-shadow:var(--shadow)}
+  .capture .ce{font-family:var(--serif);font-size:18px}
+  .capture .ca{color:var(--amber);font-weight:600}
+  .capture .cmeta{color:var(--muted);font-size:13.5px;margin-top:3px}
+  /* ---------- MAIA ---------- */
+  .note{font-size:13.5px;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:12px;padding:12px 14px;margin:12px 0}
+  .note b{color:var(--teal-deep)}
+  .scaleguide{position:sticky;top:47px;background:var(--paper);padding:10px 0 8px;z-index:5;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between}
+  .scaleguide span{flex:1;text-align:center}
+  .grp{margin-top:26px}
+  .grp h2{font-family:var(--serif);font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--teal-deep);margin:0 0 2px}
+  .grp p.gd{color:var(--muted);font-size:13.5px;margin:0 0 10px}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:9px 0;box-shadow:var(--shadow)}
+  .item .q{font-size:15.5px;margin-bottom:10px}
+  .opts{display:flex;gap:6px;justify-content:space-between}
+  .opts label{flex:1;text-align:center;cursor:pointer}
+  .opts input{display:none}
+  .opts .pill{display:block;border:1px solid var(--line);border-radius:9px;padding:9px 0;font-size:14px;background:#fff;transition:.12s}
+  .opts label:hover .pill{border-color:var(--teal)}
+  .opts input:checked+.pill{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:600}
+  #ma_progress{color:var(--muted);font-size:14px}
+  #ma_results{margin-top:30px;display:none}
+  .bar{margin:14px 0}
+  .bar .bl{display:flex;justify-content:space-between;font-size:14.5px;margin-bottom:5px}
+  .bar .bl b{font-family:var(--serif);font-weight:600}
+  .bar .bv{color:var(--teal-deep);font-weight:600}
+  .track{background:#EFE8D8;border-radius:999px;height:14px;overflow:hidden}
+  .fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-deep));border-radius:999px;transition:width .6s}
+  .rdesc{font-size:13px;color:var(--muted);margin-top:3px}
+  /* ---------- WONDER ---------- */
+  #view-wq{text-align:center;background:radial-gradient(120% 60% at 50% 0%,#FBF8F0,var(--paper))}
+  .pacer{display:flex;flex-direction:column;align-items:center;margin:8px 0 6px;height:108px;justify-content:center}
+  .breathdot{width:34px;height:34px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 0 rgba(20,116,111,.25);animation:breathe 10s ease-in-out infinite}
+  @keyframes breathe{0%{transform:scale(.7);box-shadow:0 0 0 0 rgba(20,116,111,.18)}50%{transform:scale(1.45);box-shadow:0 0 0 26px rgba(20,116,111,.06)}100%{transform:scale(.7);box-shadow:0 0 0 0 rgba(20,116,111,.18)}}
+  .breathlabel{font-size:13px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:12px}
+  @media (prefers-reduced-motion:reduce){.breathdot{animation:none}}
+  #wq_root.pause-off .breathdot{animation:none}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow-lg);padding:42px 30px;margin:14px 0;min-height:230px;display:flex;flex-direction:column;justify-content:center;opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s}
+  .card.in{opacity:1;transform:none}
+  .cat{font-family:var(--serif);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:16px}
+  .qtext{font-family:var(--serif);font-size:24px;line-height:1.4}
+  .kept{display:inline-block;margin-top:18px;font-size:13px;color:var(--teal-deep)}
+  .controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+  .small{font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;margin-top:14px}
+  #wq_keptList{text-align:left;margin-top:26px;display:none}
+  #wq_keptList h2{font-family:var(--serif);font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--teal-deep)}
+  #wq_keptList li{font-family:var(--serif);font-size:16px;margin:8px 0}
+</style>
+</head>
+<body>
+<div id="topnav" hidden><a href="#home">← The Tour</a> <span id="navlabel"></span></div>
+
+<!-- ================= HOME ================= -->
+<section class="view" id="view-home">
+  <div class="brand">Pausality · Somnistics Research Labs</div>
+  <h1>A Tour of the Senses</h1>
+  <p class="lede">Three small instruments for the time we spend together. They run entirely in your
+  browser — nothing you enter is sent anywhere.</p>
+  <p class="epi">The felt present, the sense of self, and the weather of emotion are all built from
+  the body's signals — and those signals are constructed, not simply read. So the leverage point of a
+  life is learning to calibrate them. That's the whole practice: mind the gap, and make the present.</p>
+
+  <a class="tool" href="#calibration">
+    <div class="tnum">Instrument One</div>
+    <div class="tname">Emotional Calibration</div>
+    <div class="tdesc">Sixty-four words for what you feel — each with a name and an amplitude. Build the
+    resolution to catch a feeling before it has you.</div>
+    <span class="tgo">Open →</span>
+  </a>
+  <a class="tool" href="#maia">
+    <div class="tnum">Instrument Two</div>
+    <div class="tname">MAIA-2 Body-Awareness Check-in</div>
+    <div class="tdesc">An eight-facet self-portrait of how you relate to your body's inner signals.
+    A mirror, not a measure — sensibility, not accuracy.</div>
+    <span class="tgo">Open →</span>
+  </a>
+  <a class="tool" href="#wonder">
+    <div class="tnum">Instrument Three</div>
+    <div class="tname">Wonder Questions</div>
+    <div class="tdesc">A deck of prompts on awe, time, the body, and meaning — paced by the breath.
+    Draw one, hold it for a full round, answer with what you notice.</div>
+    <span class="tgo">Open →</span>
+  </a>
+
+  <div class="foot">
+    <span class="priv">Everything stays in your browser. Nothing is sent anywhere.</span><br>
+    Pausality · pausality.health — tools for reflection and practice, not medical assessment.<br>
+    Grounded in Wittmann, Strigo &amp; Simmons, <em>The Bodily Self, Emotion, and Subjective Time</em>,
+    and Köteles, <em>Body Sensations: The Conscious Aspects of Interoception</em>.
+  </div>
+</section>
+
+<!-- ================= EMOTIONAL CALIBRATION ================= -->
+<section class="view" id="view-ec" hidden>
+  <div class="brand">Instrument One</div>
+  <h1>Emotional Calibration</h1>
+  <p class="lede">Sixty-four words for what you feel — each with a name and an amplitude. Naming a
+  feeling precisely, and gauging how loud it is, gives you <em>surface area to train on</em>: you can
+  catch the earliest signal before it has you.</p>
+
+  <div class="step">
+    <h2>Step 1</h2><h3>Where is the felt tone?</h3>
+    <p class="hint">Don't analyze — sense. Pick the quadrant your body is closest to right now.</p>
+    <div class="axislabel">↑ Activated</div>
+    <div class="grid2" id="ec_quads"></div>
+    <div class="axislabel">↓ Calm &nbsp;·&nbsp; ← Unpleasant&nbsp;&nbsp;|&nbsp;&nbsp;Pleasant →</div>
+  </div>
+
+  <div class="step hide" id="ec_s2">
+    <h2>Step 2</h2><h3>Which crayon?</h3>
+    <p class="hint">These are deliberately distinct. Reach for the one that fits — or the one that's
+    almost right, then notice what's missing.</p>
+    <div class="words" id="ec_words"></div>
+  </div>
+
+  <div class="step hide" id="ec_s3">
+    <h2>Step 3</h2><h3>How loud is it? <span style="color:var(--muted);font-weight:400;font-size:15px">— amplitude</span></h3>
+    <p class="amp-val" id="ec_ampVal">5</p>
+    <p class="amp-label" id="ec_ampLabel">clearly present</p>
+    <input type="range" id="ec_amp" min="0" max="10" value="5">
+    <div class="scaleends"><span>0 · barely there</span><span>10 · at the edge / explosion</span></div>
+
+    <label class="fld">Where do you feel it first? <span style="font-weight:400;color:var(--muted)">(the earliest body signal)</span></label>
+    <input type="text" id="ec_body" placeholder="jaw, chest, breath, gut, shoulders…">
+
+    <label class="fld">What nudged it?</label>
+    <input type="text" id="ec_trigger" placeholder="a thought, a message, a memory, nothing in particular…">
+
+    <div class="toggle">
+      <input type="checkbox" id="ec_expect">
+      <label for="ec_expect" style="margin:0;cursor:pointer">This may be my <strong>expectation</strong> of the situation as much as the situation itself.</label>
+    </div>
+    <div class="frame">A body sensation isn't a raw readout — it's partly built from what you expected,
+    where your attention was, and the story you're already telling. Calibrating it is a skill, not a verdict.</div>
+
+    <div class="row">
+      <button class="btn" id="ec_save" disabled>Add to the tour</button>
+      <button class="btn ghost" id="ec_reset">Start over</button>
+    </div>
+    <p class="timeprompt" id="ec_timeprompt">Now notice — what just happened to your sense of time?</p>
+  </div>
+
+  <div class="step hide" id="ec_logStep">
+    <h2>Your tour</h2><h3 id="ec_tourCount">Captured states</h3>
+    <div id="ec_log"></div>
+    <div class="row">
+      <button class="btn ghost" id="ec_copy">Copy summary</button>
+      <span id="ec_copied" style="color:var(--teal-deep);font-size:14px"></span>
+    </div>
+  </div>
+  <div class="foot"><span class="priv">Everything stays in your browser.</span> Pausality · pausality.health — reflection, not diagnosis.</div>
+</section>
+
+<!-- ================= MAIA-2 ================= -->
+<section class="view" id="view-ma" hidden>
+  <div class="brand">Instrument Two</div>
+  <h1>MAIA-2 Body-Awareness Check-in</h1>
+  <p class="lede">A short self-portrait of how you relate to your body's inner signals — across eight
+  facets. There are no good or bad scores. It's a mirror you can return to.</p>
+
+  <div class="note"><b>What this is — and isn't.</b> This measures interoceptive <b>sensibility</b>
+  (how attuned you <em>feel</em>, by self-report). That is a different thing from interoceptive
+  <b>accuracy</b> (how well you'd actually track a body signal on a test) — and the two often diverge.
+  Feeling attuned isn't the same as being accurate. Hold the result as reflection, not assessment.</div>
+
+  <div class="note">Items follow the <b>MAIA-2</b> (Multidimensional Assessment of Interoceptive
+  Awareness, version 2; Mehling et&nbsp;al., 2018), freely available under Creative Commons. Wording here
+  is reproduced to the editors' best fidelity — verify against the official instrument before any
+  research or clinical use. Not a medical test; no diagnosis is implied.</div>
+
+  <div class="scaleguide">
+    <span>0 · Never</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5 · Always</span>
+  </div>
+
+  <form id="ma_form"></form>
+
+  <div class="actions">
+    <button class="btn" id="ma_score" type="button">See my profile</button>
+    <span id="ma_progress">0 / 37 answered</span>
+  </div>
+
+  <div id="ma_results">
+    <h2 style="font-family:var(--serif);font-weight:600;font-size:23px">Your eight facets</h2>
+    <p style="color:var(--muted);font-size:14.5px;margin-top:2px">Each facet is the average of its items, 0–5.
+    Higher means you report relating to that signal more readily — not that it's "better."</p>
+    <div id="ma_bars"></div>
+    <p style="font-family:var(--serif);font-style:italic;color:var(--teal-deep);font-size:16px;margin-top:18px">
+      Body-listening is the doorway to the felt present — the sense of <em>now</em> and the sense of
+      <em>self</em> are built from these very signals.</p>
+    <div class="actions">
+      <button class="btn ghost" id="ma_copy" type="button">Copy my profile</button>
+      <span id="ma_copied" style="color:var(--teal-deep);font-size:14px"></span>
+    </div>
+  </div>
+  <div class="foot"><span class="priv">Everything stays in your browser.</span> Pausality · pausality.health</div>
+</section>
+
+<!-- ================= WONDER QUESTIONS ================= -->
+<section class="view" id="view-wq" hidden>
+  <div id="wq_root">
+    <div class="brand">Instrument Three</div>
+    <h1>Wonder Questions</h1>
+    <p class="lede" style="margin-left:auto;margin-right:auto;max-width:520px">Draw a card. Let the dot
+    pace your breath — in as it grows, out as it falls — and hold the question for one full round before
+    you answer. There are no right answers; there's only what you notice.</p>
+
+    <div class="pacer">
+      <div class="breathdot"></div>
+      <div class="breathlabel" id="wq_breathlabel">breathe with the dot · ~5s in · ~5s out</div>
+    </div>
+
+    <div class="card" id="wq_card">
+      <div class="cat" id="wq_cat">Begin</div>
+      <div class="qtext" id="wq_q">Press <em>Draw a card</em> when your next exhale ends.</div>
+      <span class="kept" id="wq_keptMark"></span>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="wq_draw">Draw a card</button>
+      <button class="btn ghost" id="wq_keep">Keep this one</button>
+    </div>
+    <button class="small" id="wq_toggleBreath">pause the breathing dot</button>
+    <button class="small" id="wq_showKept" style="margin-left:14px">show kept cards</button>
+
+    <div id="wq_keptList"><h2>Cards you kept</h2><ul id="wq_keptUl"></ul>
+      <button class="btn ghost" id="wq_copyKept">Copy kept cards</button>
+      <span id="wq_copied" style="color:var(--teal-deep);font-size:14px;margin-left:8px"></span></div>
+
+    <div class="foot" style="text-align:center">
+      <span class="priv">Everything stays in your browser.</span> Pausality · pausality.health<br>
+      <span style="font-size:11.5px">If you have dizziness, are pregnant, dehydrated, or have a
+      neurovascular condition, breathe normally rather than pacing.</span>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ---------- router ---------- */
+(function(){
+  const views={home:'view-home',calibration:'view-ec',maia:'view-ma',wonder:'view-wq'};
+  const labels={calibration:'Emotional Calibration',maia:'MAIA-2 Check-in',wonder:'Wonder Questions'};
+  function route(){
+    let h=(location.hash||'').replace('#','')||'home';
+    if(!views[h])h='home';
+    Object.values(views).forEach(id=>{document.getElementById(id).hidden=true;});
+    document.getElementById(views[h]).hidden=false;
+    const nav=document.getElementById('topnav');
+    if(h==='home'){nav.hidden=true;}
+    else{nav.hidden=false;document.getElementById('navlabel').textContent='· '+labels[h];}
+    window.scrollTo(0,0);
+  }
+  window.addEventListener('hashchange',route);
+  route();
+})();
+
+/* ---------- Emotional Calibration ---------- */
+(function(){
+  const QUADS=[
+   {key:'au',n:'Tense & charged',d:'activated · unpleasant',words:['tense','anxious','frustrated','irritated','angry','overwhelmed','restless','panicked','agitated','pressured','defensive','jittery','alarmed','frantic','resentful','dread']},
+   {key:'ap',n:'Lit up',d:'activated · pleasant',words:['energized','excited','alert','inspired','playful','curious','eager','joyful','proud','confident','awe','elated','motivated','hopeful','enthusiastic','alive']},
+   {key:'cu',n:'Low & weathered',d:'calm · unpleasant',words:['tired','drained','flat','discouraged','lonely','numb','heavy','melancholy','disappointed','resigned','foggy','hollow','wistful','bored','deflated','withdrawn']},
+   {key:'cp',n:'Settled',d:'calm · pleasant',words:['calm','peaceful','content','relaxed','grounded','serene','safe','tender','grateful','settled','at ease','mellow','soothed','open','restored','quiet']},
+  ];
+  const ORDER=['au','ap','cu','cp'];
+  const AMP=['barely there','barely there','a quiet hum','noticeable','building','clearly present','strong','loud','very loud','near the edge','at the edge / explosion'];
+  let sel={quad:null,word:null,amp:5,body:'',trigger:'',expect:false};
+  const tour=[];
+  const $=id=>document.getElementById(id);
+  const quadsEl=$('ec_quads');
+  ORDER.forEach(k=>{
+    const q=QUADS.find(x=>x.key===k);
+    const d=document.createElement('div');d.className='quad';
+    d.innerHTML='<div class="qn">'+q.n+'</div><div class="qd">'+q.d+'</div>';
+    d.onclick=()=>pickQuad(k,d);
+    quadsEl.appendChild(d);
+  });
+  function pickQuad(k,el){
+    document.querySelectorAll('#view-ec .quad').forEach(x=>x.classList.remove('active'));
+    el.classList.add('active');
+    sel.quad=k; sel.word=null;
+    const q=QUADS.find(x=>x.key===k);
+    const w=$('ec_words');w.innerHTML='';
+    q.words.forEach(word=>{
+      const b=document.createElement('div');b.className='word';b.textContent=word;
+      b.onclick=()=>{document.querySelectorAll('#view-ec .word').forEach(x=>x.classList.remove('sel'));
+        b.classList.add('sel');sel.word=word;$('ec_s3').classList.remove('hide');
+        $('ec_save').disabled=false;$('ec_s3').scrollIntoView({behavior:'smooth',block:'start'});};
+      w.appendChild(b);
+    });
+    $('ec_s2').classList.remove('hide');
+    $('ec_s2').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  const amp=$('ec_amp');
+  amp.oninput=()=>{sel.amp=+amp.value;$('ec_ampVal').textContent=amp.value;
+    $('ec_ampLabel').textContent=AMP[+amp.value];
+    const t=+amp.value/10;amp.style.accentColor='rgb('+(20+Math.round(178*t))+','+(116-Math.round(60*t))+','+(111-Math.round(68*t))+')';};
+  $('ec_save').onclick=()=>{
+    sel.body=$('ec_body').value.trim();sel.trigger=$('ec_trigger').value.trim();sel.expect=$('ec_expect').checked;
+    tour.push(Object.assign({},sel));renderLog();
+    $('ec_timeprompt').style.display='block';
+    $('ec_logStep').classList.remove('hide');
+    $('ec_logStep').scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  $('ec_reset').onclick=()=>{
+    sel={quad:null,word:null,amp:5,body:'',trigger:'',expect:false};
+    document.querySelectorAll('#view-ec .quad,#view-ec .word').forEach(x=>x.classList.remove('active','sel'));
+    $('ec_s2').classList.add('hide');$('ec_s3').classList.add('hide');
+    $('ec_body').value='';$('ec_trigger').value='';$('ec_expect').checked=false;
+    amp.value=5;amp.oninput();window.scrollTo({top:0,behavior:'smooth'});
+  };
+  function renderLog(){
+    const q=k=>QUADS.find(x=>x.key===k);
+    $('ec_tourCount').textContent='Captured states ('+tour.length+')';
+    $('ec_log').innerHTML=tour.map(c=>{
+      const meta=[c.body?'first in: '+c.body:'',c.trigger?'nudge: '+c.trigger:'',c.expect?'noted as partly expectation':''].filter(Boolean).join(' · ');
+      return '<div class="capture"><div class="ce">'+c.word+' <span class="ca">· '+c.amp+'/10</span></div><div class="cmeta">'+q(c.quad).d+(meta?' — '+meta:'')+'</div></div>';
+    }).join('');
+  }
+  $('ec_copy').onclick=()=>{
+    const q=k=>QUADS.find(x=>x.key===k).d;
+    const txt='Pausality · Emotional Calibration\n\n'+tour.map((c,i)=>
+      (i+1)+'. '+c.word+' — amplitude '+c.amp+'/10 ('+q(c.quad)+')'+
+      (c.body?'\n   first felt in: '+c.body:'')+(c.trigger?'\n   nudged by: '+c.trigger:'')+
+      (c.expect?'\n   noted as partly expectation':'')).join('\n\n');
+    navigator.clipboard.writeText(txt).then(()=>{$('ec_copied').textContent='Copied ✓';setTimeout(()=>$('ec_copied').textContent='',2500);},()=>{$('ec_copied').textContent='Select & copy manually';});
+  };
+  amp.oninput();
+})();
+
+/* ---------- MAIA-2 ---------- */
+(function(){
+  const SCALES={
+   noticing:{name:'Noticing',desc:'awareness of body sensations'},
+   nd:{name:'Not-Distracting',desc:'tendency not to ignore or distract from discomfort'},
+   nw:{name:'Not-Worrying',desc:'tendency not to worry with discomfort'},
+   attn:{name:'Attention Regulation',desc:'sustaining & directing attention to the body'},
+   emo:{name:'Emotional Awareness',desc:'noticing the body–emotion link'},
+   self:{name:'Self-Regulation',desc:'regulating distress by attending to the body'},
+   listen:{name:'Body Listening',desc:'listening to the body for insight'},
+   trust:{name:'Trusting',desc:'experiencing the body as safe & trustworthy'},
+  };
+  const ITEMS=[
+   {s:'noticing',t:'When I am tense I notice where the tension is located in my body.'},
+   {s:'noticing',t:'I notice when I am uncomfortable in my body.'},
+   {s:'noticing',t:'I notice where in my body I am comfortable.'},
+   {s:'noticing',t:'I notice changes in my breathing, such as whether it slows down or speeds up.'},
+   {s:'nd',r:1,t:'I distract myself from sensations of discomfort.'},
+   {s:'nd',r:1,t:'I do not notice (I ignore) physical tension or discomfort until they become more severe.'},
+   {s:'nd',r:1,t:'When I feel physical pain or discomfort, I try to power through it.'},
+   {s:'nd',r:1,t:'I push feelings of discomfort away by focusing on something else.'},
+   {s:'nd',r:1,t:'When I feel unpleasant body sensations, I occupy myself with something else so I don’t have to feel them.'},
+   {s:'nd',r:1,t:'When I feel pain or discomfort, I try not to think about it.'},
+   {s:'nw',r:1,t:'When I feel physical pain, I become upset.'},
+   {s:'nw',r:1,t:'I start to worry that something is wrong if I feel any discomfort.'},
+   {s:'nw',t:'I can notice an unpleasant body sensation without worrying about it.'},
+   {s:'nw',t:'I can stay calm and not worry when I have feelings of discomfort or pain.'},
+   {s:'nw',t:'When I feel physical discomfort, I can keep from being overwhelmed by it.'},
+   {s:'attn',t:'I can pay attention to my breath without being distracted by things happening around me.'},
+   {s:'attn',t:'I can maintain awareness of my inner bodily sensations even when there is a lot going on around me.'},
+   {s:'attn',t:'When I am in conversation with someone, I can pay attention to my posture.'},
+   {s:'attn',t:'I can return awareness to my body if I am distracted.'},
+   {s:'attn',t:'I can refocus my attention from thinking to sensing my body.'},
+   {s:'attn',t:'I can maintain awareness of my whole body even when a part of me is in pain or discomfort.'},
+   {s:'attn',t:'I am able to consciously focus on my body as a whole.'},
+   {s:'emo',t:'I notice how my body changes when I am angry.'},
+   {s:'emo',t:'When something is wrong in my life I can feel it in my body.'},
+   {s:'emo',t:'I notice that my body feels different after a peaceful experience.'},
+   {s:'emo',t:'I notice that my breathing becomes free and easy when I feel comfortable.'},
+   {s:'emo',t:'I notice how my body changes when I feel happy or joyful.'},
+   {s:'self',t:'When I feel overwhelmed I can find a calm place inside.'},
+   {s:'self',t:'When I bring awareness to my body I feel a sense of calm.'},
+   {s:'self',t:'I can use my breath to reduce tension.'},
+   {s:'self',t:'When I am caught up in thoughts, I can calm my mind by focusing on my body or breathing.'},
+   {s:'listen',t:'I listen for information from my body about my emotional state.'},
+   {s:'listen',t:'When I am upset, I take time to explore how my body feels.'},
+   {s:'listen',t:'I listen to my body to inform me about what to do.'},
+   {s:'trust',t:'I am at home in my body.'},
+   {s:'trust',t:'I feel my body is a safe place.'},
+   {s:'trust',t:'I trust my body sensations.'},
+  ];
+  const $=id=>document.getElementById(id);
+  const form=$('ma_form');
+  let lastScale=null;
+  ITEMS.forEach((it,i)=>{
+    if(it.s!==lastScale){
+      lastScale=it.s;
+      const g=document.createElement('div');g.className='grp';
+      g.innerHTML='<h2>'+SCALES[it.s].name+'</h2><p class="gd">'+SCALES[it.s].desc+'</p>';
+      g.id='ma_grp-'+it.s;form.appendChild(g);
+    }
+    const grp=$('ma_grp-'+it.s);
+    const d=document.createElement('div');d.className='item';
+    let opts='';
+    for(let v=0;v<=5;v++){opts+='<label><input type="radio" name="maq'+i+'" value="'+v+'"><span class="pill">'+v+'</span></label>';}
+    d.innerHTML='<div class="q">'+it.t+'</div><div class="opts">'+opts+'</div>';
+    grp.appendChild(d);
+  });
+  function answered(){let n=0;ITEMS.forEach((_,i)=>{if(form.querySelector('input[name=maq'+i+']:checked'))n++;});return n;}
+  form.addEventListener('change',()=>{$('ma_progress').textContent=answered()+' / 37 answered';});
+  let results=null;
+  $('ma_score').onclick=()=>{
+    const sums={},counts={};Object.keys(SCALES).forEach(k=>{sums[k]=0;counts[k]=0;});
+    ITEMS.forEach((it,i)=>{
+      const el=form.querySelector('input[name=maq'+i+']:checked');if(!el)return;
+      let v=+el.value;if(it.r)v=5-v;sums[it.s]+=v;counts[it.s]++;
+    });
+    results={};Object.keys(SCALES).forEach(k=>{results[k]=counts[k]?sums[k]/counts[k]:null;});
+    const desc=m=>m==null?'not answered':m>=4?'strongly reported':m>=3?'moderately reported':m>=1.7?'lightly reported':'seldom reported';
+    $('ma_bars').innerHTML=Object.keys(SCALES).map(k=>{
+      const m=results[k];const pct=m==null?0:(m/5*100);
+      return '<div class="bar"><div class="bl"><b>'+SCALES[k].name+'</b><span class="bv">'+(m==null?'—':m.toFixed(2))+' / 5</span></div><div class="track"><div class="fill" style="width:'+pct+'%"></div></div><div class="rdesc">'+desc(m)+'</div></div>';
+    }).join('');
+    $('ma_results').style.display='block';$('ma_results').scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  $('ma_copy').onclick=()=>{
+    if(!results)return;
+    const txt='Pausality · MAIA-2 Check-in (interoceptive sensibility, self-report 0–5)\n\n'+
+      Object.keys(SCALES).map(k=>SCALES[k].name+': '+(results[k]==null?'—':results[k].toFixed(2))+' / 5').join('\n')+
+      '\n\nNote: sensibility (felt attunement), not accuracy. Reflection, not assessment.';
+    navigator.clipboard.writeText(txt).then(()=>{$('ma_copied').textContent='Copied ✓';setTimeout(()=>$('ma_copied').textContent='',2500);});
+  };
+})();
+
+/* ---------- Wonder Questions ---------- */
+(function(){
+  const DECK=[
+   {c:'Awe',q:'When did you last feel small in a way that felt like relief rather than threat?'},
+   {c:'Awe',q:'What is the largest thing you can hold in your attention right now?'},
+   {c:'Awe',q:'Recall a moment that briefly rearranged what you thought was possible. Where did you feel it in your body?'},
+   {c:'Awe',q:'What ordinary thing, looked at long enough, becomes astonishing?'},
+   {c:'Mystery',q:'What do you believe that you cannot prove?'},
+   {c:'Mystery',q:'Name something you understand less now than you did ten years ago.'},
+   {c:'Mystery',q:'What question are you afraid to finish asking?'},
+   {c:'Mystery',q:'Where in your life is the map clearly not the territory?'},
+   {c:'Time',q:'When did time last disappear for you — and what were you attending to?'},
+   {c:'Time',q:'Is this present moment something you are reading, or something you are making?'},
+   {c:'Time',q:'If the next breath were the only unit of time, how long is "now"?'},
+   {c:'Time',q:'What part of today did you live through without being present for it?'},
+   {c:'Time',q:'Has fear ever sped time up for you, or stretched it? Which, and why?'},
+   {c:'The Body',q:'Where is your attention in your body, right now — before you change it?'},
+   {c:'The Body',q:'Is the sensation you notice the situation itself, or your expectation of it?'},
+   {c:'The Body',q:'What is the quietest signal your body is sending you at this moment?'},
+   {c:'The Body',q:'If your body could say one sentence to you, would you trust it? Should you?'},
+   {c:'The Body',q:'How much of what you feel right now is signal, and how much is story?'},
+   {c:'The Body',q:'A feeling arrives already colored — pleasant or not. Can you catch one before the verdict lands?'},
+   {c:'Connection',q:'Who taught you what safety feels like in the body?'},
+   {c:'Connection',q:'Bring to mind someone who cares for you. What changes in your chest, your breath, your shoulders?'},
+   {c:'Connection',q:'Whose attention do you most want — and what would you do with it?'},
+   {c:'Connection',q:'When you are at your most overwhelmed, who do you become? Is that who you mean to be?'},
+   {c:'Meaning',q:'What would you attend to more, if you trusted your attention to be sovereign?'},
+   {c:'Meaning',q:'What are you practicing without having chosen to?'},
+   {c:'Meaning',q:'If the gap between a trigger and your response grew by one second, what would you do with it?'},
+   {c:'Meaning',q:'What is worth slowing down for that you keep speeding past?'},
+   {c:'Meaning',q:'What would it mean to be at home in your own body?'},
+   {c:'Meaning',q:'If awe were a daily practice rather than an accident, where would you go looking for it?'},
+  ];
+  const $=id=>document.getElementById(id);
+  let order=[],idx=-1;const kept=[];
+  function shuffle(){order=DECK.map((_,i)=>i);for(let i=order.length-1;i>0;i--){const j=Math.floor((Date.now()*(i+7)%9973)/9973*(i+1))%(i+1);const t=order[i];order[i]=order[j];order[j]=t;}}
+  shuffle();
+  const cardEl=$('wq_card');
+  function draw(){
+    idx++;if(idx>=order.length){shuffle();idx=0;}
+    const card=DECK[order[idx]];
+    cardEl.classList.remove('in');
+    setTimeout(()=>{
+      $('wq_cat').textContent=card.c;$('wq_q').innerHTML=card.q;
+      $('wq_keptMark').textContent=kept.indexOf(card.q)>=0?'kept ✓':'';
+      cardEl.classList.add('in');
+    },180);
+  }
+  $('wq_draw').onclick=draw;
+  $('wq_keep').onclick=()=>{
+    if(idx<0)return;const q=DECK[order[idx]].q;
+    if(kept.indexOf(q)<0)kept.push(q);
+    $('wq_keptMark').textContent='kept ✓';renderKept();
+  };
+  function renderKept(){$('wq_keptUl').innerHTML=kept.map(q=>'<li>“'+q+'”</li>').join('')||'<li style="color:var(--muted)">none yet</li>';}
+  $('wq_showKept').onclick=()=>{
+    const k=$('wq_keptList');const show=k.style.display!=='block';k.style.display=show?'block':'none';
+    $('wq_showKept').textContent=show?'hide kept cards':'show kept cards';renderKept();
+  };
+  $('wq_toggleBreath').onclick=function(){
+    const off=$('wq_root').classList.toggle('pause-off');
+    this.textContent=off?'resume the breathing dot':'pause the breathing dot';
+    $('wq_breathlabel').textContent=off?'paced breath paused':'breathe with the dot · ~5s in · ~5s out';
+  };
+  $('wq_copyKept').onclick=()=>{
+    const txt='Pausality · Wonder Questions — cards I kept\n\n'+kept.map(q=>'• '+q).join('\n');
+    navigator.clipboard.writeText(txt).then(()=>{$('wq_copied').textContent='Copied ✓';setTimeout(()=>$('wq_copied').textContent='',2500);});
+  };
+})();
+</script>
+</body>
+</html>

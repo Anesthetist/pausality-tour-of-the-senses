@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pausality · Emotional Calibration</title>
+<style>
+  :root{
+    --paper:#F5F1E8; --card:#FFFDF8; --ink:#1F2421; --muted:#6B6A60;
+    --line:#E4DCCB; --teal:#14746F; --teal-deep:#0E5450; --teal-soft:#E6F0EE;
+    --amber:#C6692B; --shadow:0 10px 30px rgba(31,36,33,.07);
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:780px;margin:0 auto;padding:34px 22px 80px}
+  .brand{font-family:var(--serif);letter-spacing:.02em;font-size:14px;color:var(--teal-deep);
+    text-transform:uppercase}
+  h1{font-family:var(--serif);font-weight:600;font-size:30px;margin:.25em 0 .15em;line-height:1.15}
+  .lede{color:var(--muted);font-size:16px;margin:0 0 8px}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:18px;
+    box-shadow:var(--shadow);padding:22px;margin:18px 0}
+  .step h2{font-family:var(--serif);font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--teal-deep);margin:0 0 4px}
+  .step h3{font-family:var(--serif);font-size:21px;margin:0 0 14px;font-weight:600}
+  .hint{color:var(--muted);font-size:14px;margin:-6px 0 14px}
+  /* circumplex */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative;margin-top:10px}
+  .axis-y{position:absolute;left:-8px;top:0;bottom:0;width:0}
+  .quad{border:1px solid var(--line);border-radius:14px;padding:16px 14px;cursor:pointer;
+    background:#fff;transition:.18s;min-height:96px;display:flex;flex-direction:column;justify-content:center}
+  .quad:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .quad.active{border-color:var(--teal);background:var(--teal-soft)}
+  .quad .qn{font-family:var(--serif);font-size:17px;font-weight:600}
+  .quad .qd{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .axislabel{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.06em;
+    text-transform:uppercase;margin:8px 0}
+  /* words */
+  .words{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .word{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;
+    cursor:pointer;font-size:14.5px;transition:.15s}
+  .word:hover{border-color:var(--teal)}
+  .word.sel{background:var(--teal);color:#fff;border-color:var(--teal)}
+  /* amplitude */
+  .amp-val{font-family:var(--serif);font-size:34px;font-weight:600;text-align:center;margin:4px 0 0}
+  .amp-label{text-align:center;color:var(--muted);font-size:14px;margin-bottom:10px;min-height:20px}
+  input[type=range]{width:100%;accent-color:var(--amber);height:30px}
+  .scaleends{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
+  textarea,input[type=text]{width:100%;border:1px solid var(--line);border-radius:10px;
+    padding:10px 12px;font-family:var(--sans);font-size:15px;background:#fff;resize:vertical}
+  label.fld{display:block;font-size:14px;margin:14px 0 5px;font-weight:600}
+  .toggle{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px;
+    background:var(--teal-soft);border-radius:12px;font-size:14px;color:var(--teal-deep)}
+  .toggle input{width:18px;height:18px;accent-color:var(--teal)}
+  .btn{background:var(--teal);color:#fff;border:none;border-radius:12px;padding:12px 20px;
+    font-size:15px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+  .btn:hover{background:var(--teal-deep)}
+  .btn[disabled]{opacity:.4;cursor:not-allowed}
+  .btn.ghost{background:#fff;color:var(--teal-deep);border:1px solid var(--line)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px}
+  .timeprompt{font-family:var(--serif);font-style:italic;color:var(--teal-deep);font-size:16px;
+    margin-top:14px;display:none}
+  /* tour log */
+  .capture{border-left:3px solid var(--teal);background:var(--card);border-radius:10px;
+    padding:12px 16px;margin:10px 0;box-shadow:var(--shadow)}
+  .capture .ce{font-family:var(--serif);font-size:18px}
+  .capture .ca{color:var(--amber);font-weight:600}
+  .capture .cmeta{color:var(--muted);font-size:13.5px;margin-top:3px}
+  .hide{display:none}
+  .foot{color:var(--muted);font-size:12.5px;margin-top:40px;border-top:1px solid var(--line);
+    padding-top:16px;line-height:1.5}
+  .priv{color:var(--teal-deep);font-weight:600}
+  .frame{font-size:13.5px;color:var(--muted);background:#fff;border:1px dashed var(--line);
+    border-radius:12px;padding:12px 14px;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">Pausality · A Tour of the Senses</div>
+  <h1>Emotional Calibration</h1>
+  <p class="lede">Sixty-four words for what you feel — each with a name and an amplitude.
+  Naming a feeling precisely, and gauging how loud it is, gives you <em>surface area to train on</em>:
+  you can catch the earliest signal before it has you.</p>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <h2>Step 1</h2><h3>Where is the felt tone?</h3>
+    <p class="hint">Don't analyze — sense. Pick the quadrant your body is closest to right now.</p>
+    <div class="axislabel">↑ Activated</div>
+    <div class="grid2" id="quads"></div>
+    <div class="axislabel">↓ Calm &nbsp;·&nbsp; ← Unpleasant&nbsp;&nbsp;|&nbsp;&nbsp;Pleasant →</div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step hide" id="s2">
+    <h2>Step 2</h2><h3>Which crayon?</h3>
+    <p class="hint">These are deliberately distinct. Reach for the one that fits — or the one that's
+    almost right, then notice what's missing.</p>
+    <div class="words" id="words"></div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step hide" id="s3">
+    <h2>Step 3</h2><h3>How loud is it? <span style="color:var(--muted);font-weight:400;font-size:15px">— amplitude</span></h3>
+    <p class="amp-val" id="ampVal">5</p>
+    <p class="amp-label" id="ampLabel">clearly present</p>
+    <input type="range" id="amp" min="0" max="10" value="5">
+    <div class="scaleends"><span>0 · barely there</span><span>10 · at the edge / explosion</span></div>
+
+    <label class="fld">Where do you feel it first? <span style="font-weight:400;color:var(--muted)">(the earliest body signal)</span></label>
+    <input type="text" id="body" placeholder="jaw, chest, breath, gut, shoulders…">
+
+    <label class="fld">What nudged it?</label>
+    <input type="text" id="trigger" placeholder="a thought, a message, a memory, nothing in particular…">
+
+    <div class="toggle">
+      <input type="checkbox" id="expect">
+      <label for="expect" style="margin:0;cursor:pointer">This may be my <strong>expectation</strong> of the situation as much as the situation itself.</label>
+    </div>
+    <div class="frame">A body sensation isn't a raw readout — it's partly built from what you expected,
+    where your attention was, and the story you're already telling. Calibrating it is a skill, not a verdict.</div>
+
+    <div class="row">
+      <button class="btn" id="save" disabled>Add to the tour</button>
+      <button class="btn ghost" id="reset">Start over</button>
+    </div>
+    <p class="timeprompt" id="timeprompt">Now notice — what just happened to your sense of time?</p>
+  </div>
+
+  <!-- TOUR LOG -->
+  <div class="step hide" id="logStep">
+    <h2>Your tour</h2><h3 id="tourCount">Captured states</h3>
+    <div id="log"></div>
+    <div class="row">
+      <button class="btn ghost" id="copy">Copy summary</button>
+      <span id="copied" style="color:var(--teal-deep);font-size:14px"></span>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span class="priv">Everything stays on your device. Nothing is sent anywhere.</span><br>
+    Pausality · Somnistics Research Labs · pausality.health — a tool for reflection, not diagnosis.
+  </div>
+</div>
+
+<script>
+const QUADS=[
+ {key:'au',n:'Tense & charged',d:'activated · unpleasant',words:['tense','anxious','frustrated','irritated','angry','overwhelmed','restless','panicked','agitated','pressured','defensive','jittery','alarmed','frantic','resentful','dread']},
+ {key:'ap',n:'Lit up',d:'activated · pleasant',words:['energized','excited','alert','inspired','playful','curious','eager','joyful','proud','confident','awe','elated','motivated','hopeful','enthusiastic','alive']},
+ {key:'cu',n:'Low & weathered',d:'calm · unpleasant',words:['tired','drained','flat','discouraged','lonely','numb','heavy','melancholy','disappointed','resigned','foggy','hollow','wistful','bored','deflated','withdrawn']},
+ {key:'cp',n:'Settled',d:'calm · pleasant',words:['calm','peaceful','content','relaxed','grounded','serene','safe','tender','grateful','settled','at ease','mellow','soothed','open','restored','quiet']},
+];
+// display order: top row activated (unpleasant, pleasant); bottom row calm (unpleasant, pleasant)
+const ORDER=['au','ap','cu','cp'];
+const AMP=['barely there','barely there','a quiet hum','noticeable','building','clearly present','strong','loud','very loud','near the edge','at the edge / explosion'];
+
+let sel={quad:null,word:null,amp:5,body:'',trigger:'',expect:false};
+const tour=[];
+
+const quadsEl=document.getElementById('quads');
+ORDER.forEach(k=>{
+  const q=QUADS.find(x=>x.key===k);
+  const d=document.createElement('div');d.className='quad';d.dataset.k=k;
+  d.innerHTML=`<div class="qn">${q.n}</div><div class="qd">${q.d}</div>`;
+  d.onclick=()=>pickQuad(k,d);
+  quadsEl.appendChild(d);
+});
+
+function pickQuad(k,el){
+  document.querySelectorAll('.quad').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  sel.quad=k; sel.word=null;
+  const q=QUADS.find(x=>x.key===k);
+  const w=document.getElementById('words');w.innerHTML='';
+  q.words.forEach(word=>{
+    const b=document.createElement('div');b.className='word';b.textContent=word;
+    b.onclick=()=>{document.querySelectorAll('.word').forEach(x=>x.classList.remove('sel'));
+      b.classList.add('sel');sel.word=word;document.getElementById('s3').classList.remove('hide');
+      document.getElementById('save').disabled=false;
+      document.getElementById('s3').scrollIntoView({behavior:'smooth',block:'start'});};
+    w.appendChild(b);
+  });
+  document.getElementById('s2').classList.remove('hide');
+  document.getElementById('s2').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+const amp=document.getElementById('amp');
+amp.oninput=()=>{sel.amp=+amp.value;document.getElementById('ampVal').textContent=amp.value;
+  document.getElementById('ampLabel').textContent=AMP[+amp.value];
+  const t=+amp.value/10; amp.style.accentColor=`rgb(${20+Math.round(178*t)},${116-Math.round(60*t)},${111-Math.round(68*t)})`;};
+
+document.getElementById('save').onclick=()=>{
+  sel.body=document.getElementById('body').value.trim();
+  sel.trigger=document.getElementById('trigger').value.trim();
+  sel.expect=document.getElementById('expect').checked;
+  tour.push({...sel});
+  renderLog();
+  document.getElementById('timeprompt').style.display='block';
+  document.getElementById('logStep').classList.remove('hide');
+  document.getElementById('logStep').scrollIntoView({behavior:'smooth',block:'start'});
+};
+document.getElementById('reset').onclick=()=>{
+  sel={quad:null,word:null,amp:5,body:'',trigger:'',expect:false};
+  document.querySelectorAll('.quad,.word').forEach(x=>x.classList.remove('active','sel'));
+  document.getElementById('s2').classList.add('hide');
+  document.getElementById('s3').classList.add('hide');
+  ['body','trigger'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('expect').checked=false;
+  amp.value=5;amp.oninput();
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+function renderLog(){
+  const q=k=>QUADS.find(x=>x.key===k);
+  document.getElementById('tourCount').textContent=`Captured states (${tour.length})`;
+  document.getElementById('log').innerHTML=tour.map(c=>{
+    const meta=[c.body?`first in: ${c.body}`:'',c.trigger?`nudge: ${c.trigger}`:'',
+      c.expect?'noted as partly expectation':''].filter(Boolean).join(' · ');
+    return `<div class="capture"><div class="ce">${c.word}
+      <span class="ca">· ${c.amp}/10</span></div>
+      <div class="cmeta">${q(c.quad).d}${meta?' — '+meta:''}</div></div>`;
+  }).join('');
+}
+
+document.getElementById('copy').onclick=()=>{
+  const q=k=>QUADS.find(x=>x.key===k).d;
+  const txt='Pausality · Emotional Calibration\n\n'+tour.map((c,i)=>
+    `${i+1}. ${c.word} — amplitude ${c.amp}/10 (${q(c.quad)})`+
+    (c.body?`\n   first felt in: ${c.body}`:'')+
+    (c.trigger?`\n   nudged by: ${c.trigger}`:'')+
+    (c.expect?`\n   noted as partly expectation`:'')).join('\n\n');
+  navigator.clipboard.writeText(txt).then(()=>{
+    document.getElementById('copied').textContent='Copied to clipboard ✓';
+    setTimeout(()=>document.getElementById('copied').textContent='',2500);
+  },()=>{document.getElementById('copied').textContent='Select & copy below';});
+};
+amp.oninput();
+</script>
+</body>
+</html>
