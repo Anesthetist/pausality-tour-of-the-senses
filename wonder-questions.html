@@ -19,7 +19,6 @@
   .brand{font-family:var(--serif);letter-spacing:.02em;font-size:14px;color:var(--teal-deep);text-transform:uppercase}
   h1{font-family:var(--serif);font-weight:600;font-size:30px;margin:.25em 0 .1em}
   .lede{color:var(--muted);font-size:16px;margin:0 auto 18px;max-width:520px}
-  /* breath pacer */
   .pacer{display:flex;flex-direction:column;align-items:center;margin:8px 0 6px;height:108px;justify-content:center}
   .dot{width:34px;height:34px;border-radius:50%;background:var(--teal);
     box-shadow:0 0 0 0 rgba(20,116,111,.25);animation:breathe 10s ease-in-out infinite}
@@ -30,7 +29,6 @@
   .breathlabel{font-size:13px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:12px}
   @media (prefers-reduced-motion:reduce){.dot{animation:none}}
   .pause-off .dot{animation:none}
-  /* card */
   .card{background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);
     padding:42px 30px;margin:14px 0;min-height:230px;display:flex;flex-direction:column;justify-content:center;
     opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s}
@@ -92,35 +90,29 @@
 
 <script>
 const DECK=[
- // Awe
  {c:'Awe',q:'When did you last feel small in a way that felt like relief rather than threat?'},
  {c:'Awe',q:'What is the largest thing you can hold in your attention right now?'},
  {c:'Awe',q:'Recall a moment that briefly rearranged what you thought was possible. Where did you feel it in your body?'},
  {c:'Awe',q:'What ordinary thing, looked at long enough, becomes astonishing?'},
- // Mystery
  {c:'Mystery',q:'What do you believe that you cannot prove?'},
  {c:'Mystery',q:'Name something you understand less now than you did ten years ago.'},
  {c:'Mystery',q:'What question are you afraid to finish asking?'},
  {c:'Mystery',q:'Where in your life is the map clearly not the territory?'},
- // Time
  {c:'Time',q:'When did time last disappear for you — and what were you attending to?'},
  {c:'Time',q:'Is this present moment something you are reading, or something you are making?'},
  {c:'Time',q:'If the next breath were the only unit of time, how long is "now"?'},
  {c:'Time',q:'What part of today did you live through without being present for it?'},
  {c:'Time',q:'Has fear ever sped time up for you, or stretched it? Which, and why?'},
- // The Body
  {c:'The Body',q:'Where is your attention in your body, right now — before you change it?'},
  {c:'The Body',q:'Is the sensation you notice the situation itself, or your expectation of it?'},
  {c:'The Body',q:'What is the quietest signal your body is sending you at this moment?'},
  {c:'The Body',q:'If your body could say one sentence to you, would you trust it? Should you?'},
  {c:'The Body',q:'How much of what you feel right now is signal, and how much is story?'},
  {c:'The Body',q:'A feeling arrives already colored — pleasant or not. Can you catch one before the verdict lands?'},
- // Connection
  {c:'Connection',q:'Who taught you what safety feels like in the body?'},
  {c:'Connection',q:'Bring to mind someone who cares for you. What changes in your chest, your breath, your shoulders?'},
  {c:'Connection',q:'Whose attention do you most want — and what would you do with it?'},
  {c:'Connection',q:'When you are at your most overwhelmed, who do you become? Is that who you mean to be?'},
- // Meaning
  {c:'Meaning',q:'What would you attend to more, if you trusted your attention to be sovereign?'},
  {c:'Meaning',q:'What are you practicing without having chosen to?'},
  {c:'Meaning',q:'If the gap between a trigger and your response grew by one second, what would you do with it?'},
@@ -176,5 +168,9 @@ document.getElementById('copyKept').onclick=()=>{
   });
 };
 </script>
+<aside class="pz-next" style="max-width:640px;margin:48px auto 40px;padding:24px 16px 0;border-top:1px solid rgba(127,127,127,.35);text-align:center;font:inherit;color:inherit">
+  <p style="margin:0 0 14px;line-height:1.5">Train this with live feedback on Apple Watch with Pausality™.</p>
+  <a href="https://apps.apple.com/us/app/pausality/id6743325009?utm_source=pausality-tour-of-the-senses&utm_medium=instrument&utm_campaign=wonder-questions" target="_blank" rel="noopener" style="display:inline-block;padding:12px 22px;border:1.5px solid currentColor;border-radius:999px;color:inherit;text-decoration:none;font-weight:600">Get Pausality on the App Store</a>
+</aside>
 </body>
 </html>
